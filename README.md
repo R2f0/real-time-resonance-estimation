@@ -3,7 +3,7 @@
 **A Windows-compatible, patched fork of the RAVE GUI** from the Acoustics Lab at UNSW Sydney (Joe Wolfe's lab), originally developed by Noel Hanna and colleagues. RAVE estimates vocal tract resonances in real time by injecting a broadband acoustic signal at the lips and analysing the response while a subject speaks or sings.
 
 Original repository: [noelhanna/real-time-resonance-estimation](https://github.com/noelhanna/real-time-resonance-estimation)
-Background on the technique: [UNSW Music Acoustics – vocal tract resonance measurement](https://newt.phys.unsw.edu.au/jw/broadband.html) and this article [Using visual feedback to tune the second vocal tract resonance for singing in the high soprano range] (https://www.tandfonline.com/doi/abs/10.1080/14015439.2020.1834612) 
+Background on the technique: [UNSW Music Acoustics – vocal tract resonance measurement](https://newt.phys.unsw.edu.au/jw/broadband.html) and this article [Using visual feedback to tune the second vocal tract resonance for singing in the high soprano range](https://www.tandfonline.com/doi/abs/10.1080/14015439.2020.1834612) 
 
 This fork exists because the original code was developed and tested on macOS, and did not run correctly on Windows. The bugs below were diagnosed and fixed on Windows 10/11, and several were confirmed by correspondence with Joe Wolfe.
 
