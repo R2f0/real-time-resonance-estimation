@@ -109,7 +109,7 @@ set(handles.SpeedNfft, 'Position', positionSpeed)
 cla(handles.Audio)
 cla(handles.Spectre)
 cla(handles.Calibration)
-cla(handles.Phase)
+try; try; cla(handles.Phase); catch e; disp(e.message); end; catch; end
 cla(handles.EGG)
 handles.Audio;
 
@@ -909,7 +909,7 @@ handles.Namechanged = 0;
 handles.ParamSaved=0;
 handles.ListFileName = [cellstr('')];
 handles.ListPathName = [cellstr('')];
-% ecriture des parametres standards dans les objets de l interface
+% writing standard parameters to interface objects
 set(handles.edit_SamplingFrequency,'String',handles.Fs);
 set(handles.edit_NumberOfBits,'String',handles.NbBits);
 set(handles.edit_LowestFrequency,'String',handles.FreqLo);
@@ -2225,7 +2225,7 @@ if filename_sound~=0
                 %                 cla(handles.Audio)
                 %                 cla(handles.EGG)
                 %                 cla(handles.Spectre)
-                %                 cla(handles.Phase)
+                %                 try; try; cla(handles.Phase); catch e; disp(e.message); end; catch; end
                 set(handles.text_ValNbAverage_Browse, 'String', '1')
                 WaitbarWindow = waitbar(0,'Please wait...');
                 % file type is Acuz
@@ -2494,7 +2494,7 @@ if filename_sound~=0
             %         cla(handles.Audio)
             %         cla(handles.EGG)
             %         cla(handles.Spectre)
-            %         cla(handles.Phase)
+            %         try; try; cla(handles.Phase); catch e; disp(e.message); end; catch; end
             for aa=1:SavedCurvesNumber
                 if aa<10
                     check_obj = findobj('Tag', ['checkboxSavedCurve0', num2str(aa)]);
@@ -4653,7 +4653,7 @@ end
 %
 %
 %
-% DureeBruit = 50 ; %[s]
+% DureeBruit = 300 ; %[s]
 % waveformTot = [];
 % for i=1:floor(DureeBruit*handles.Fs/handles.nCalib)%handles.NbCyclePerSecond*DureeBruit
 %     waveformTot = cat(1, waveformTot, handles.CalibSource);
@@ -4779,7 +4779,7 @@ if get(handles.radiobuttonCalculationAcuz, 'Value')==1
     %             PARAMS.nChannelFirst, PARAMS.nChannelLast,...
     %             PARAMS.device_number, PARAMS.device_type);
     %     inputbufferOri = pawavplayrecordmodifiedMARIE([noise' noise'],handles.DevIDoutputMOTU,handles.Fs,0,1,handles.nChannels,handles.DevIDoutputMOTU,'core');
-    inputbufferOri = pawavplayrecordmodifiedMARIE([noise' noise'],DevID_MIC,handles.Fs,0,1,handles.nChannels,DevID_Mic,'core');
+    inputbufferOri = pawavplayrecordmodifiedMARIE([noise' noise'],DevID_Out,handles.Fs,0,1,handles.nChannels,DevID_Mic,'core');
     % -------------------
     % >> correct phase
     Correlation = xcorr(inputbufferOri(:,2),noise');
@@ -5020,7 +5020,7 @@ elseif get(handles.radiobuttonCalculationRealTime, 'Value')==1
     position = cat(2,Position4, Position5, Position6);
     
     %Total Length of broadband probe signal
-    DureeBruit = 60 ; %[s]
+    DureeBruit = 300 ; %[s]
     waveformTot = [];
     for kk=1:floor(DureeBruit*handles.Fs/handles.nCalib)
         waveformTot = cat(1, waveformTot, handles.CalibSource);
@@ -5041,7 +5041,9 @@ elseif get(handles.radiobuttonCalculationRealTime, 'Value')==1
         
         
         
-        handles.recorder = audiorecorder(Fs,handles.NbBits,handles.nChannels,DevID_Mic);
+    end
+    handles.recorder = audiorecorder(Fs,handles.NbBits,handles.nChannels,DevID_Mic);
+    if get(handles.CalculationPlayStopBBSignal, 'Value')==0
         handles.plBBSignal = audioplayer(test, handles.Fs, 16, DevID_Out);
         
         PlayStopBBSignal = handles.plBBSignal;
@@ -5097,9 +5099,9 @@ elseif get(handles.radiobuttonCalculationRealTime, 'Value')==1
             end
             s = newDATA(1:N*handles.nCalib,1)* sqrt(2) / handles.transduc;
             egg = newDATA(1:N*handles.nCalib,2);
-            acc = newDATA(1:N*handles.nCalib,3);
+            % acc = newDATA(1:N*handles.nCalib,3); % dezactivat - doar 2 canale
             % NH edit to add accelerometer
-            handles.totalDATA = cat(1,handles.totalDATA, [s, audio]);
+            handles.totalDATA = cat(1,handles.totalDATA, [s, egg]);
             SizeTotalDATA = size(handles.totalDATA);
             guidata(hObject, handles);
             %             totalDATA = cat(1,totalDATA, [s, egg, acc]); % NH edit
@@ -5141,7 +5143,7 @@ global Fs k Nfft Lsamples Stop hjSlider %NbAverage NbCyclePerSecond
 
 k = k+1;
 samples  = getaudiodata(hObject);
-assignin('base', 'samples', samples);
+% assignin dezactivat - incetinea
 handles.egg = samples(:,2);
 if get(handles.radiobuttonPipe, 'Value')==1
     handles.audio = samples(:,1) * sqrt(2) / handles.transduc; %Units [Pa]
@@ -5328,7 +5330,7 @@ global Fs i L_samples hjSlider %NbAverage NbCyclePerSecond
 
 i = i+1;
 samples  = getaudiodata(hObject);
-assignin('base', 'samples', samples);
+% assignin dezactivat - incetinea
 handles.egg = samples(:,2);
 if get(handles.radiobuttonPipe, 'Value')==1
     handles.audio = samples(:,1) * sqrt(2) / handles.transduc; %Units [Pa]
@@ -6914,7 +6916,7 @@ XLim = get(handles.Spectre, 'XLim');
 xmin = XLim(1); xmax = XLim(2);
 
 cla(handles.Spectre)
-% cla(handles.Phase)
+% try; try; cla(handles.Phase); catch e; disp(e.message); end; catch; end
 
 axes(handles.Spectre);
 varRawData = get(handles.DisplayRawData, 'Value');
@@ -10592,7 +10594,7 @@ if get(hObject,'Value')==1
     
     set(handles.DisplayDeleteHarmonics, 'Enable', 'on')
     clockPushButton = clock;
-    DureeBruit = 50 ; %[s]
+    DureeBruit = 300 ; %[s]
     waveformTot = [];
     for kk=1:floor(DureeBruit*handles.Fs/handles.nCalib)%handles.NbCyclePerSecond*DureeBruit
         waveformTot = cat(1, waveformTot, handles.CalibSource);
@@ -10640,7 +10642,7 @@ if get(hObject,'Value')==1
             %                 %         %display('Pipe');
             %                 handles.plBBSignal = audioplayer(test, handles.Fs, 16, handles.DevIDoutputMOTU);
             %             end
-            handles.plBBSignal = audioplayer(test, handles.Fs, 16, DevID_Mic);
+            devinfoTMP = audiodevinfo; outputTMP = devinfoTMP.output; DevID_OutFIX = cell2mat({outputTMP(handles.audioOutputMenu.Value).ID}); handles.plBBSignal = audioplayer(test, handles.Fs, 16, DevID_OutFIX);
             guidata(hObject, handles);
             PlayStopBBSignal = handles.plBBSignal;
             play(handles.plBBSignal);
@@ -10949,9 +10951,10 @@ global Fs indRecord i L_samples hjSlider indRecordTest L IsPlaying iEndNoise...
     iStartNewRecord XLimSpectrum
 
 clockTimer = clock;
+try
 indRecord = indRecord+1;
 samples  = getaudiodata(hObject);
-assignin('base', 'samples', samples);
+% assignin dezactivat - incetinea
 handles.egg = samples(:,2);
 if get(handles.radiobuttonPipe, 'Value')==1
     handles.audio = samples(:,1) * sqrt(2) / handles.transduc; %Units [Pa]
@@ -10983,6 +10986,7 @@ end
 %graph Audio
 
 EggSliderVal = get(hjSlider,'Value');
+if mod(indRecord,3)==1
 
 if IsPlaying==1;
     plot(handles.EGG, handles.egg(end-(handles.nCalib-EggSliderVal):end),'b'); %'color', [0.3 0.3 0.3]);
@@ -11011,6 +11015,7 @@ hold(handles.Audio, 'off');
 xlim(handles.Audio, [1 handles.nCalib]/handles.Fs);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+end
 NbAverage = str2double(get(handles.edit_ValNbAverage_Calculate,'String'));
 
 if (L- NbAverage*handles.nCalib+1)<2
@@ -11129,6 +11134,7 @@ else
             if mod(Nplage,2)==0
                 Nplage=Nplage-1;
             end
+try
             for k=1:length(locs)
                 [~,ind] = min(abs(freqZ-locs(k)));
                 indW = ceil(w(k)/(2*handles.df));
@@ -11143,7 +11149,7 @@ else
                         if 3 <=Nplage-indW-3
                             degree =3;
                         else
-                            degree = Nplage-indW-3;
+                            degree = max(1,Nplage-indW-3);
                         end
                         %             %display('*-+-*')
                         part1 = medfilt1(sgolayfilt(Zplot(ind-Nplage:ind-indW)-MeanZplot,degree,Nplage-indW-1),Nplage-indW-1);
@@ -11157,7 +11163,7 @@ else
                         if 3 <=Nplage-2
                             degree =3;
                         else
-                            degree = Nplage-2;
+                            degree = max(1,Nplage-2);
                         end
                         Zfilt(ind-Nplage:ind+Nplage) = [medfilt1(sgolayfilt(Zplot(ind-Nplage:ind)-MeanZplot,degree,Nplage),Nplage);...
                             medfilt1(sgolayfilt(Zplot(ind+1:ind+Nplage)-MeanZplot,degree,Nplage),Nplage)];
@@ -11201,6 +11207,7 @@ else
                 end
             end
             Yfilt = medfilt1(sgolayfilt(Yfilt,2,21),7);
+catch; end % protectie sgolay - cadrul continua
             
         else
             Zfilt = medfilt1(sgolayfilt(Zplot-MeanZplot,3,9),5);
@@ -11577,6 +11584,9 @@ hold(graph2,'off');
 hold(graph3,'off');
 
 
+catch MErr
+fprintf(2, '>>> EROARE AFISARE: %s\n', MErr.message); for sK=1:min(6,numel(MErr.stack)); fprintf(2, '    -> %s linia %d\n', MErr.stack(sK).name, MErr.stack(sK).line); end
+end
 function [PlottedCurves]= DisplayChosenCurvesNEW(handles)
 
 
@@ -11920,7 +11930,7 @@ if ValHi>ValLo
     end
     
     %     cla(handles.Spectre)
-    %     cla(handles.Phase)
+    %     try; try; cla(handles.Phase); catch e; disp(e.message); end; catch; end
     
     axes(handles.Spectre);
     Legend_SpectreRawData = {};
@@ -11986,7 +11996,7 @@ if ValHi>ValLo
                 
             else
                 hold(handles.Phase,'off');
-                %             cla(handles.Phase)
+                %             try; try; cla(handles.Phase); catch e; disp(e.message); end; catch; end
                 if get(handles.DisplayDerivPhaseOffset, 'Value')==1
                     [AX,H1,H2] = plotyy(handles.Phase, freqZplot, PhasePlot, freqDerivPhasePlot,DerivPhasePlot-MeanDerivPhasePlot);
                     AX(2).YColor = 'blue';
@@ -12477,7 +12487,7 @@ if ValHi>ValLo
                             if 3 <=Nplage-indW-3
                                 degree =3;
                             else
-                                degree = Nplage-indW-3;
+                                degree = max(1,Nplage-indW-3);
                             end
                             %                         %display('*-+-*')
                             part1 = medfilt1(sgolayfilt(AmpPlot(ind-Nplage:ind-indW)-MeanAmpPlot,degree,Nplage-indW-1),Nplage-indW-1);
@@ -12491,7 +12501,7 @@ if ValHi>ValLo
                             if 3 <=Nplage-2
                                 degree =3;
                             else
-                                degree = Nplage-2;
+                                degree = max(1,Nplage-2);
                             end
                             Zfilt(ind-Nplage:ind+Nplage) = [medfilt1(sgolayfilt(AmpPlot(ind-Nplage:ind)-MeanAmpPlot,degree,Nplage),Nplage);...
                                 medfilt1(sgolayfilt(AmpPlot(ind+1:ind+Nplage)-MeanAmpPlot,degree,Nplage),Nplage)];
@@ -14822,8 +14832,7 @@ if handles.ExistRecord == 1 & StopRecordPushed==0
     handles.MaxValSlider = handles.NbCycle;
     handles.TCycle = linspace(0, (length(handles.totalDATA)-1)/handles.Fs, handles.NbCycle+1);
     
-    ValMAX = get(hjRangeSlider,'Maximum');
-    ValMIN = get(hjRangeSlider,'Minimum');
+    try; ValMAX = get(hjRangeSlider,'Maximum'); ValMIN = get(hjRangeSlider,'Minimum'); catch; ValMAX = handles.MaxValSlider; ValMIN = handles.MinValSlider; end
     if (ValMAX-ValMIN)*handles.nCalib>(5*handles.Fs)
         step = floor((ValMAX-ValMIN)*handles.nCalib/(5*handles.Fs)); %5seconds limitation
         if mod(handles.nCalib, step)~=0
