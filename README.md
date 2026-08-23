@@ -8,7 +8,7 @@ Background on the technique: [UNSW Music Acoustics – vocal tract resonance mea
 This fork exists because the original code was developed and tested on macOS, and did not run correctly on Windows. The bugs below were diagnosed and fixed on Windows 10/11, and several were confirmed by correspondence with Joe Wolfe.
 
 ---
-## What was fixed ( by Fable 5 ) 
+## What was fixed 
 1. Mismatched .fig/.m file pair
 The GitHub repository contains GUI_RAVE.m, but the downloadable figure file is GUI_RAVE_ICPHS.fig, whose callbacks are all hardcoded to call GUI_RAVE_ICPHS. Fix: copied the .fig to GUI_RAVE.fig and created a small wrapper file GUI_RAVE_ICPHS.m that forwards all calls to GUI_RAVE, so every button callback resolves correctly.
 2. Startup crash in OpeningFcn
